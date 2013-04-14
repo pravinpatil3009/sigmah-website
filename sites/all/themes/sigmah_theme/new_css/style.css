@@ -1312,3 +1312,12 @@ white-space: -pre-wrap;
 white-space: -o-pre-wrap;
 word-wrap: break-word;
 }
+
+/* New CSS rule added for replacement of <sup> tag */
+/* To use this rule use <span class="newsub>your_superscript</span>"*/
+.newsub{
+        position: relative;
+        font-size: 75%;
+        top: -0.5em;
+}
+

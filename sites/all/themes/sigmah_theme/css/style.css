@@ -149,3 +149,13 @@ div.status {
 #sidebar-first {	background: #e7edff; }
 #sidebar-second { background: #ffd075; }
 #navigation { background-color: #feffa5; }
+
+/* New CSS rule added for replacement of <sup> tag */
+/* To use this rule use <span class="newsub>your_superscript</span>"*/
+
+.newsub{
+        position: relative;
+        font-size: 75%;
+        top: -0.5em;
+}
+
