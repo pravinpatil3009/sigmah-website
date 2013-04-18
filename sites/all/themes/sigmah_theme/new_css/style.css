@@ -45,6 +45,13 @@ label {
 	text-align:right;
 }
 
+.pravinpatil {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-left:20px;
+
+}
 input {
 	border:1px solid #999999;
 	color:#999999;
@@ -1048,7 +1055,8 @@ margin-left:8px;
 .forum_list form {
 	width:273px;
 	height:41px;
-	background:url(../img/footer_forum_list.jpg) no-repeat;
+	background:#f5e0b3;
+/*	background:url(../img/footer_forum_list.jpg) no-repeat;*/
 }
 
 #forumRec {
@@ -1059,14 +1067,18 @@ margin-left:8px;
 }
 
 #forumButton {
-	width:20px;
-	border:none;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	width:45px;
+/*	border:none;*/
 	font-size:11px;
 	font-weight:bold;
 	background:none;
 	cursor:pointer;
 	color:#c29f69;
 	overflow:visible;
+	background:rgb(228, 222, 215);
 	}
 	
 #forum div.indent {
@@ -1313,8 +1325,10 @@ white-space: -o-pre-wrap;
 word-wrap: break-word;
 }
 
+
+
 /* New CSS rule added for replacement of <sup> tag */
-/* To use this rule use <span class="newsub>your_superscript</span>"*/
+
 .newsub{
         position: relative;
         font-size: 75%;
