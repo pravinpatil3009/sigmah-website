@@ -1329,7 +1329,7 @@ word-wrap: break-word;
 
 /* New CSS rule added for replacement of <sup> tag */
 
-.newsub{
+.sup{
         position: relative;
         font-size: 75%;
         top: -0.5em;
