@@ -104,6 +104,18 @@
 	z-index: 1103;
 	display: none;
 }
+#fancybox-close1 {
+        position: absolute;
+        top: 22px;
+        right: 30px;
+        width: 71px;
+        height: 15px;
+        background: transparent url('close1.jpg') no-repeat;
+        cursor: pointer;
+        z-index: 1103;
+        display: none;
+}
+
 
 #fancybox-close:hover {
 
