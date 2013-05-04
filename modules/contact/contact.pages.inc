@@ -133,10 +133,10 @@ function contact_mail_page_submit($form, &$form_state) {
   drupal_mail('contact', 'page_mail', $contact['recipients'], language_default(), $values, $from);
 
   // If the user requests it, send a copy using the current language.
-  if ($values['copy']) {
+  if ($values['copy']=='1') {
     drupal_mail('contact', 'page_copy', $from, $language, $values, $from);
   }
-  else {
+  else if($values['copy']=='2'){
 	//this will generate random password
           $password = user_password(8);
 
