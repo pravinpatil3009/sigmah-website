@@ -88,7 +88,8 @@ function contact_mail_page() {
       );
     }
     else {
-      $form['copy'] = array('#type' => 'value', '#value' => FALSE);
+      $form['copy'] = array('#type' => 'hidden', '#value' => '0');
+//      $form['copy'] = array('#type' => 'value', '#value' => FALSE);
     }
     $form['submit'] = array('#type' => 'submit',
       '#value' => t('Send e-mail'),
@@ -135,6 +136,33 @@ function contact_mail_page_submit($form, &$form_state) {
   if ($values['copy']) {
     drupal_mail('contact', 'page_copy', $from, $language, $values, $from);
   }
+  else {
+	//this will generate random password
+          $password = user_password(8);
+
+          //username provided on the contact page
+          $username = $values['name'];
+
+          //set up user fields
+          $fields = array(
+                  'name' => $username,
+                  'mail' => $from,
+                  'pass' => $password,
+                  'status' => 1,
+                  'init' => 'email address',
+                  'roles' => array(DRUPAL_AUTHENTICATED_RID => 'authenticated user'),
+          );
+
+          //the first parameter is left blank for new user
+          $account = user_save('',$fields);
+
+          //password appears in the mail
+          $account->password = $fields['pass'];
+
+          //send the email through user module
+          drupal_mail('user', 'register_no_approval_required', $from, NULL, array('account' => $account), variable_get('site_mail', 'no-reply@sigmah.org'));
+          drupal_goto('http://www.sigmah.org');
+}
 
   // Send an auto-reply if necessary using the current language.
   if ($contact['reply']) {
@@ -147,7 +175,7 @@ function contact_mail_page_submit($form, &$form_state) {
 
   // Jump to home page rather than back to contact page to avoid
   // contradictory messages if flood control has been activated.
-  $form_state['redirect'] = '';
+  $form_state['redirect'] = FALSE;
 }
 
 /**

@@ -27,7 +27,7 @@ function sigmah_form_alter(&$form, &$form_state, $form_id){
 	}elseif ($form_id == 'user_confirm_delete') {
 		unset($form['user_delete_action']['#options']['user_delete_delete']);   
 	}elseif($form_id == 'contact_mail_page') {
-		$form['#redirect'] = FALSE;
+		$form['#redirect'] = '';
 		$form['subject']['#weight'] = 1;
 		$form['message']['#weight'] = 2;
 		$form['name']['#prefix'] = '<h5>'.t('Would you like to receive a reply?').'</h5>'.
