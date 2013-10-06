@@ -1,0 +1,61 @@
+<?php
+
+
+function ogmap_menu(){
+	$items =array();
+	$items['ogmap/post'] = array(
+		'title' => t('Post retrieved nodes to respective organic groups'),
+		'page callback' => 'ogmap_page',
+		'access arguments' => array('administer ogmap post'),
+		'type' => MENU_CALLBACK,
+			);
+	return $items;
+}
+
+function ogmap_perm(){
+	return array('administer ogmap post');
+}
+
+
+function ogmap_page(){
+	return drupal_get_form('ogmap_form_page');
+}
+
+
+function ogmap_form_page(){
+	$form['submit'] = array(
+		'#type'	=> 'submit',
+		'#value' => t('Post imported nodes to organic groups'),
+			);
+	return $form;
+}
+
+function ogmap_form_page_submit($form_id,$form_values){
+	$query = "select nid,uid from {node} where type='issue' and status=0";
+	$result = db_query($query);
+	$numb_rows = $result->num_rows;
+	if($numb_rows == 0){
+		drupal_set_message(t("No nodes posted"));
+	}
+	else{
+		$i=0;
+		while($rows1 = db_fetch_array($result))
+		{
+			$query1 = "select nid from {og_uid} where uid =%d ";
+			$group_nid = db_result(db_query($query1,$rows1['uid']));
+			$query2 = "insert into {og_ancestry} (nid,group_nid) values('%s','%s')";
+			$result2 = db_query($query2,$rows1['nid'],$group_nid);
+			$query3 = "update {og_access_post} set og_public=0";
+			$result3 = db_query($query3);
+			$node = node_load(intval($rows1['nid']));
+			$node->status = 1;
+			$node->revision = 1;
+			node_save($node);
+			$node->log = "Node linked to organic group programmatically";
+			$i++;
+		}
+		$message = $i." Support request posted to respective organic groups";
+		drupal_set_message(t($message));
+	}
+}
+
