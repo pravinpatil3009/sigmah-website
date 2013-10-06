@@ -1,0 +1,86 @@
+<?php
+
+
+function og_user_import_menu(){
+	$items = array();
+	$items['og/og_user_import'] = array (
+			'title' => t('Import users to organic groups based on users'),
+			'page callback'	=> 'og_user_import_page',
+			'access arguments' => array('administer og_user_import'),
+			'type' => MENU_CALLBACK,
+			);
+	$items['og/og_user_import_autocomplete'] = array(
+			'title' => 'autocomplete for groups',
+			'page callback' => '_og_user_import_autocomplete',
+			'access arguments' => array('use group autocomplete'),
+			'type' => MENU_CALLBACK,
+			);
+	return $items;
+}
+
+
+function _og_user_import_autocomplete($string){
+	$matches = array();
+	$result = db_query_range("select og_description from {og} where LOWER(og_description) like LOWER('%s%') and og_private=1",$string,0,5);
+	while($data = db_fetch_object($result)){
+		$matches[$data->og_description] = check_plain($data->og_description);
+	}
+	print drupal_to_js($matches);
+	exit();
+}
+
+function og_user_import_perm(){
+	return array('administer og_user_import','use group autocomplete');
+}
+
+function og_user_import_page(){
+	return drupal_get_form('og_user_import_form_page');
+}
+
+function og_user_import_form_page(){
+	$form['hostname'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Enter the email hostname'),
+			'#required' => TRUE,
+			);
+		
+	$form['group'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Enter the group name'),
+			'#required' => TRUE,
+			'#autocomplete_path' => 'og/og_user_import_autocomplete',
+			);
+	$form['submit'] = array(
+			'#type' => 'submit',
+			'#value' => t('Import'),
+			);
+	return $form;
+}
+
+
+function og_user_import_form_page_submit($form,$form_state){
+	$uids = array();
+	$host = $form_state['values']['hostname'];
+	$group = $form_state['values']['group'];
+	$query = db_query("select nid from {og} where og_description='%s' ",$group);
+	while($nids = db_fetch_object($query)){
+		$nid = $nids->nid;
+	}
+	$result = db_query("select uid,mail from {users}");
+	while ($data = db_fetch_object($result)){
+		$strip_mail = explode("@",$data->mail);
+		if(strtolower($strip_mail[1]) == strtolower($host)){
+			$uids[$data->uid] = check_plain($data->uid);
+		
+		}
+	}
+	$i=0;
+	foreach ($uids as $uid){
+		$query1 = db_query("insert into {og_uid} (nid,og_role,is_active,is_admin,uid,created,changed) values (%d,%d,%d,%d,%d,%d,%d)" , $nid,0,1,0,$uid,0,0);
+		$query2 = db_query("insert into {og_users_roles} (gid,uid,rid) values (%d,%d,%d)", $nid,$uid,11); 
+		$i++;
+	}
+	$message = "Successfully imported ".$i." users";
+	drupal_set_message(t($message));  
+	
+}

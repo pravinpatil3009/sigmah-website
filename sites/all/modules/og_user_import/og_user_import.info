@@ -1,0 +1,6 @@
+
+
+
+name = OG user import
+description = Import users into organic groups based on email host name
+core = 6.x
